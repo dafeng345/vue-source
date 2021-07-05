@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>08-组件的数据存放</title>
+</head>
+<body>
+
+<div id="app">
+  <h2>{{message}}</h2>
+  <cpn></cpn>
+</div>
+
+<template id="cpn">
+  <div>
+    <h2>组件标题</h2>
+    <p>组件的内容: {{message}}</p>
+  </div>
+</template>
+<script src="../js/vue.js"></script>
+<script>
+  const app = new Vue({
+    el: '#app',
+    data: {
+    	message: '今天天气不错!'
+    },
+    components: {
+    	'cpn': {
+    		template: '#cpn',
+        data() {
+    			return {
+    				message: '组件中的天气不错!'
+          }
+        }
+      }
+    }
+  })
+</script>
+
+</body>
+</html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>02-v-model绑定单选框</title>
+</head>
+<body>
+
+<div id="app">
+  <!--<input type="radio" value="male" v-model="gender">男-->
+  <!--<input type="radio" value="female" v-model="gender">女-->
+  <input type="radio" :value="value1" v-model="gender">男
+  <input type="radio" :value="value2" v-model="gender">女
+  <h2>您选择的性别: {{gender}}</h2>
+</div>
+
+<script src="../js/vue.js"></script>
+<script>
+  const app = new Vue({
+    el: '#app',
+    data: {
+      gender: 'male',
+      value1: 'male',
+      value2: 'female'
+    }
+  })
+</script>
+
+</body>
+</html>

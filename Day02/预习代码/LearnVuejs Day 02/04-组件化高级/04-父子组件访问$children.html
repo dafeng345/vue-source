@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>04-父子组件访问$children</title>
+</head>
+<body>
+
+<div id="app">
+  <cpn1></cpn1>
+  <cpn2></cpn2>
+  <cpn2></cpn2>
+  <div></div>
+</div>
+
+<template id="child-cpn1">
+  <div></div>
+</template>
+<template id="child-cpn2">
+  <div></div>
+</template>
+
+<script src="../js/vue.js"></script>
+<script>
+  const cpn1 = Vue.extend({
+    template: '#child-cpn1',
+    data() {
+    	return {
+    		message: '哈哈哈'
+      }
+    }
+  })
+
+  const cpn2 = Vue.extend({
+	  template: '#child-cpn2',
+	  data() {
+		  return {
+			  message: '呵呵呵'
+		  }
+	  }
+  })
+
+  const app = new Vue({
+    el: '#app',
+    components: {
+    	'cpn1': cpn1,
+      'cpn2': cpn2
+    },
+    mounted() {
+    	for (let i in this.$children) {
+    		const cpn = this.$children[i]
+		    console.log(cpn.message);
+	    }
+    }
+  })
+</script>
+
+</body>
+</html>

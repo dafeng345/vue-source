@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>09-组件slot的具名插槽</title>
+</head>
+<body>
+
+<div id="app">
+  <cpn>
+    <div slot="center"><h2>中间被替换</h2></div>
+  </cpn>
+</div>
+
+<template id="cpn">
+  <div>
+    <slot name="left">我是左边</slot>
+    <slot name="center">我是中间</slot>
+    <slot name="right">我是右边</slot>
+  </div>
+</template>
+<script src="../js/vue.js"></script>
+<script>
+  const cpn = Vue.extend({
+    template: '#cpn'
+  })
+
+  const app = new Vue({
+    el: '#app',
+    components: {
+    	cpn
+    }
+  })
+</script>
+
+</body>
+</html>

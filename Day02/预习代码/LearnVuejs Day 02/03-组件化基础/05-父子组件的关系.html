@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>05-父子组件的关系</title>
+</head>
+<body>
+
+<div id="app">
+  <cpn2></cpn2>
+  <!--错误用法-->
+  <cpn1></cpn1>
+</div>
+
+<script src="../js/vue.js"></script>
+<script>
+  // 1.注册一个子组件
+  const cpn1 = Vue.extend({
+    template: `
+      <div>
+        <h2>我是cpn1的标题</h2>
+        <p>我是cpn1的内容,哈哈哈</p>
+      </div>
+    `
+  })
+
+  // 2.注册一个父组件
+  const cpn2 = Vue.extend({
+	  template: `
+      <div>
+        <h2>我是cpn2的标题</h2>
+        <p>我是cpn2的内容,哈哈哈</p>
+        <cpn1></cpn1>
+      </div>
+    `,
+    components: {
+	  	'cpn1': cpn1
+    }
+  })
+
+  const app = new Vue({
+    el: '#app',
+    components: {
+    	'cpn2': cpn2
+    }
+  })
+</script>
+
+</body>
+</html>

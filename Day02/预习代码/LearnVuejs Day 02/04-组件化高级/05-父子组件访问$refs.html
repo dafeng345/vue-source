@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>05-父子组件访问$refs</title>
+</head>
+<body>
+
+
+<div id="app">
+  <cpn1 ref="aaa"></cpn1>
+  <cpn2 ref="bbb"></cpn2>
+  <div ref="ccc"></div>
+</div>
+
+<template id="child-cpn1">
+  <div></div>
+</template>
+<template id="child-cpn2">
+  <div></div>
+</template>
+
+<script src="../js/vue.js"></script>
+<script>
+	const cpn1 = Vue.extend({
+		template: '#child-cpn1',
+		data() {
+			return {
+				message: '哈哈哈'
+			}
+		}
+	})
+
+	const cpn2 = Vue.extend({
+		template: '#child-cpn2',
+		data() {
+			return {
+				message: '呵呵呵'
+			}
+		}
+	})
+
+	const app = new Vue({
+		el: '#app',
+		components: {
+			'cpn1': cpn1,
+			'cpn2': cpn2
+		},
+		mounted() {
+			console.log(this.$refs.aaa);
+			console.log(this.$refs.aaa.$el);
+			console.log(this.$refs.bbb);
+			console.log(this.$refs.ccc);
+		}
+	})
+</script>
+
+</body>
+</html>

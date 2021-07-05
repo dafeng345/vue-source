@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>07-组件的模板分离写法</title>
+</head>
+<body>
+
+<div id="app">
+  <cpn1></cpn1>
+  <cpn2></cpn2>
+</div>
+
+<script type="text/x-template" id="cpn1">
+<div>
+  <h2>cpn1标题</h2>
+  <p>我是cpn1的内容</p>
+</div>
+</script>
+<template id="cpn2">
+  <div>
+    <h2>cpn2标题</h2>
+    <p>我是cpn2的内容</p>
+  </div>
+</template>
+<script src="../js/vue.js"></script>
+<script>
+  const app = new Vue({
+    el: '#app',
+    components: {
+    	'cpn1': {
+    		template: '#cpn1'
+      },
+      'cpn2': {
+    		template: '#cpn2'
+      }
+    }
+  })
+</script>
+
+</body>
+</html>

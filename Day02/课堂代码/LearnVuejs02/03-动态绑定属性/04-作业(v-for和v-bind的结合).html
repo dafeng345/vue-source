@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <style>
+    .isActive{
+      color: red;
+    }
+    ul>li{
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!--作业需求: 点击列表中的哪一项, 那么该项的文字变成红色-->
+  <!-- 
+  列表中其余的项，文字还是原来的颜色。
+     ===> 
+        当点击项的索引与遍历列表所在列的索引一致时，该项的文字变色
+  -->
+  <div id="app">
+    <ul>
+      <li v-for="(m, index) in movies" @click="changeColor(index)" :class={isActive:curIndex==index}>
+        {{index+1}}-{{m}}</li>
+    </ul>
+  </div>
+
+  <script src="../js/vue.js"></script>
+  <script>
+    const app = new Vue({
+      el: '#app',
+      data: {
+        movies: ['海王', '海尔兄弟', '火影忍者', '进击的巨人']
+        , curIndex: 0
+      }
+      , methods: {
+        changeColor(index) {
+          this.curIndex = index;
+        }
+      }
+    })
+  </script>
+
+</body>
+
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>04-v-model绑定select</title>
+  <style>
+  </style>
+</head>
+<body>
+
+<div id="app">
+  <!--1. select单选-->
+  <select v-model="fruit">
+    <option value="香蕉">香蕉</option>
+    <option value="橘子">橘子</option>
+    <option value="苹果">苹果</option>
+  </select>
+  <h2>我最爱的水果:{{fruit}}</h2>
+
+  <!--2. select多选-->
+  <select id="fruits" v-model="fruits" multiple>
+    <option value="香蕉">香蕉</option>
+    <option value="橘子">橘子</option>
+    <option value="苹果">苹果</option>
+  </select>
+  <h2>我喜欢的水果: {{fruits}}</h2>
+</div>
+
+<script src="../js/vue.js"></script>
+<script>
+  const app = new Vue({
+    el: '#app',
+    data: {
+    	fruit: '香蕉',
+      fruits: []
+    }
+  })
+</script>
+
+</body>
+</html>

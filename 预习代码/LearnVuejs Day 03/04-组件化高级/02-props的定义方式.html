@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>02-props的定义方式</title>
+</head>
+<body>
+
+<div id="app"></div>
+
+<template id="cpn">
+
+</template>
+<script src="../js/vue.js"></script>
+<script>
+  class Person {
+  	constructor(name, age) {
+  		this.name = name;
+  		this.age = age;
+    }
+
+    toString() {
+  		return `姓名:${this.name} 年龄:${this.age}`
+    }
+  }
+
+  const p = new Person('why', 18)
+  console.log(p);
+
+  const app = new Vue({
+    el: '#app',
+    components: {
+    	'cpn': {
+    		template: '#cpn',
+        props: {
+    			propA: Number,
+          propB: [Number, String],
+          propC: {
+    				type: String,
+            required: true
+          },
+          propD: {
+    				type: Number,
+            default: 100
+          },
+          propE: {
+    				type: Object,
+            default() {
+    					return {}
+            }
+          },
+          propF: {
+    				type: Person,
+          }
+        }
+      }
+    }
+  })
+</script>
+
+</body>
+</html>

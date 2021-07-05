@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>03-全局组件的概念</title>
+</head>
+<body>
+
+<div id="app1">
+  <cpn></cpn>
+</div>
+<div id="app2">
+  <cpn></cpn>
+</div>
+<cpn></cpn>
+
+<script src="../js/vue.js"></script>
+<script>
+  const cpn = Vue.extend({
+    template: `
+    <div>
+      <h2>我是标题</h2>
+      <p>我是组件中的内容</p>
+    </div>
+    `
+  })
+
+  Vue.component('cpn', cpn)
+
+  const app1 = new Vue({
+    el: '#app1'
+  })
+
+  const app2 = new Vue({
+	  el: '#app2'
+  })
+</script>
+
+</body>
+</html>

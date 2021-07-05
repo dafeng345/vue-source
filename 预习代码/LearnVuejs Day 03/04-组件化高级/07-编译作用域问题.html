@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>07-编译作用域问题</title>
+</head>
+<body>
+
+<div id="app">
+  <cpn v-show="isShow"></cpn>
+</div>
+
+<template id="cpn">
+  <div>
+    <h2>组件标题</h2>
+    <p>我是组件内容</p>
+  </div>
+</template>
+<script src="../js/vue.js"></script>
+<script>
+  const cpn = Vue.extend({
+    template: '#cpn',
+    data() {
+    	isShow: false
+    }
+  })
+
+  const app = new Vue({
+    el: '#app',
+    components: {
+    	cpn
+    },
+    data: {
+    	isShow: true
+    }
+  })
+</script>
+
+</body>
+</html>

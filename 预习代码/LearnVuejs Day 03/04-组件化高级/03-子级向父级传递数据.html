@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>03-子级向父级传递数据</title>
+</head>
+<body>
+
+<div id="app">
+  <cpn @select="cpnClick"></cpn>
+  <h2>{{contents[currentIndex]}}</h2>
+</div>
+
+<template id="cpn">
+  <div>
+    <button v-for="(item, index) in titles"
+            @click="itemClick(index)">{{item}}</button>
+  </div>
+</template>
+<script src="../js/vue.js"></script>
+<script>
+  const cpn = Vue.extend({
+    template: '#cpn',
+    data() {
+    	return {
+    		titles: ['新品', '销量', '特卖']
+      }
+    },
+    methods: {
+    	itemClick(index) {
+    		this.$emit('select', index)
+	    }
+    }
+  })
+
+  const app = new Vue({
+    el: '#app',
+    components: {
+    	'cpn': cpn,
+    },
+	  data: {
+		  contents: ['新品内容', '销量内容', '特卖内容'],
+		  currentIndex: 0
+	  },
+    methods: {
+	    cpnClick(index) {
+	    	this.currentIndex = index
+	    }
+    }
+  })
+</script>
+
+</body>
+</html>

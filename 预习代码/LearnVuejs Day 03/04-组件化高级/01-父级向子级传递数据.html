@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>01-父级向子级传递数据</title>
+</head>
+<body>
+
+<div id="app">
+  <cpn :message="message"></cpn>
+</div>
+
+<template id="cpn">
+  <div>
+    <h2>组件标题</h2>
+    <p>我是组件的内容</p>
+    <h2>{{message}}</h2>
+  </div>
+</template>
+<script src="../js/vue.js"></script>
+<script>
+  const cpn = Vue.extend({
+    template: '#cpn',
+    props: ['message']
+  })
+
+  const app = new Vue({
+    el: '#app',
+    data: {
+    	message: 'Hello World'
+    },
+    components: {
+    	'cpn': cpn
+    }
+  })
+</script>
+
+</body>
+</html>

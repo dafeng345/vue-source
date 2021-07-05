@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>05-v-model的修饰符</title>
+</head>
+<body>
+
+<div id="app">
+  <input type="text" v-model.lazy="message1">
+  <h2>{{message1}}</h2>
+
+
+  <input type="number" v-model="message2">
+  <h2>{{message2}}-{{typeof message2}}</h2>
+
+
+  <input type="text" v-model.trim="message3">
+  <h2>{{message3}}</h2>
+</div>
+
+<script src="../js/vue.js"></script>
+<script>
+  const app = new Vue({
+    el: '#app',
+    data: {
+    	message1: '',
+	    message2: 0,
+      message3: ''
+    }
+  })
+</script>
+
+</body>
+</html>

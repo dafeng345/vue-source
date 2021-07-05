@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    // 全局的 event 对象, 提供 on, off, emit 方法  使用立即执行的匿名函数
+    var event = (function () {
+      // 存放事件类型与对应的处理函数
+      var eventObjs = {};
+      return {
+        // 注册事件
+        on: function (event, handler) {
+          (eventObjs[event] || (eventObjs[event] = [])).push(handler);
+        }
+        // 移除事件
+        , off: function (event, handler) {
+          if (arguments.length == 0) {  //移除所有事件
+            eventObjs = {};
+          } else if (arguments.length == 1) {  //移除某个事件对应的所有函数
+            eventObjs[event] = [];
+          } else if (arguments.length == 2) {  //移除某个事件的某个函数
+            var events = eventObjs[event];
+            if (!events) return false;
+            for (var i = events.length; i >= 0; i--) {  //倒序不影响索引
+              if (events[i] == handler) {
+                events.splice(i, 1);
+              }
+            }
+          }
+        }
+        // 触发事件
+        , emit: function (event) {
+          var args = Array.prototype.slice.call(arguments, 1); //获得从1开始的参数
+          var events = eventObjs[event];
+          if (!events) return false;
+          for (let i = 0; i < events.length; i++) {
+            const event = events[i];
+            // 为null时方法中的this指向window
+            events[i].apply(null, args);
+          }
+        }
+      }
+    })()
+
+  </script>
+
+
+  <script>
+    function f() { console.log(1) }
+    function foo() { console.log(2) }
+
+
+    // 注册事件
+    event.on('click', (a, b, c, d, e) => {
+      console.log('第一个 click 事件', a, b, c, d, e,this)
+    }); // 无法移除
+    event.on('click', (a, b, c) => console.log('第2个 click 事件', a, b, c));
+    event.on('click', function () {
+      console.log('第3个 click 事件',this)
+    });
+    event.on('click', () => console.log('第4个 click 事件'));
+    event.on('click', () => console.log('第5个 click 事件'));
+
+    console.log(1);
+    console.log(1);
+    console.log(1);
+    console.log(1);
+    console.log(1);
+    console.log(1);
+
+
+    function f() {
+      event.emit('click', 2, 3, 4, 5, 6);
+    }
+
+    // js 中 基本类型是比较值
+    // 引用类型是 比较 地址
+    // 引用类型与基本类型, 是将其转换为 基本类型再比较 , 如果是 === 严格等于是不转换比较
+  </script>
+</body>
+
+</html>

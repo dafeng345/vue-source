@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <div id="root">
+    <div class="c1">
+      <div title="tt1" id="id">{{ name }}</div>
+      <div title="tt2">{{ age }}</div>
+      <div title="tt3">{{ gender }}</div>
+      <ul>
+        <li>1</li>
+        <li>2</li>
+        <li>3</li>
+      </ul>
+    </div>
+  </div>
+  <script>
+    
+    function JGVue( options ) {
+      this._data = options.data;
+      let elm = document.querySelector( options.el ); // vue 是字符串, 这里是 DOM 
+      this._template = elm;
+      this._parent = elm.parentNode;
+
+      this.initData(); // 将 data 进行响应式转换, 进行代理
+
+    } 
+
+    JGVue.prototype.initData = function () {
+      // 遍历 this._data 的成员, 将 属性转换为响应式 ( 上 ), 将 直接属性, 代理到 实例上
+      let keys = Object.keys( this._data );
+
+      // 响应式化
+      
+
+      // 代理
+      for ( let i = 0; i < keys.length; i++ ) {
+        // 将 this._data[ keys[ i ] ] 映射到 this[ keys[ i ] ] 上
+        // 就是要 让 this 提供 keys[ i ] 这个属性
+        // 在访问这个属性的时候 相当于在 访文this._data 的这个属性
+
+        proxy( this, '_data', keys[ i ] );
+      }
+    }; 
+
+    /** 将 某一个对象的属性 访问 映射到 对象的某一个属性成员上 */
+    function proxy( target, src,prop ) {
+      Object.defineProperty(target,prop,{
+        configurable:true,
+        enumerable:true,
+        set(val){
+          target[src][prop]=val;
+        },
+        get(){
+          return target[src][prop];
+        }
+      })
+    }
+
+
+
+
+    let app = new JGVue( {
+      el: '#root',
+      data: {
+        name: '张三'
+        , age: 19
+        , gender: '难'
+        , datas: [
+          { info: '好难' },
+          { info: '太难' },
+          { info: '真的难么?' },
+          { info: '练习一下' },
+        ]
+      },
+      
+    } );
+
+  </script>
+</body>
+</html>

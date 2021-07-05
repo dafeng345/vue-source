@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="root">
+        <ul>
+            <li>
+                <a href="">
+                    <img src="" alt="">
+                </a>
+            </li>
+            <li>
+                <span></span>
+            </li>
+            <li>
+            </li>
+        </ul>
+        <p></p>
+        <button></button>
+    </div>
+    <script>
+        // 1-1方法一：递归方式
+        // function breadthFirstSearch(node) {
+        //     var nodes = [];
+        //     var i = 0;
+        //     if (!(node == null)) {
+        //         nodes.push(node);
+        //         breadthFirstSearch(node.nextElementSibling);
+        //         node = nodes[i++];
+        //         breadthFirstSearch(node.firstElementChild);
+        //     }
+        //     return nodes;
+        // }
+        // let root = document.getElementById('root')
+        // var nodeList = breadthFirstSearch(root)
+        // console.log(nodeList);
+        // 1-2方法二：非递归方式
+        function breadthFirstSearch(node) {
+            var nodeList = [];
+            if (node != null) {
+                var queue = [];
+                queue.unshift(node);  //进入队列
+                while (queue.length != 0) {
+                    var item = queue.shift();  //离开队列
+                    nodeList.push(item);
+                    var children = item.children;
+                    for (var i = 0; i < children.length; i++)
+                        // 依次将该层的子元素放到队列中
+                        queue.push(children[i]);
+                }
+            }
+            /* 将最终遍历结果存放在nodeList数组中。*/
+            return nodeList;
+        }
+        let root = document.getElementById('root')
+        var nodeList = breadthFirstSearch(root)
+        console.log(nodeList);
+    </script>
+</body>
+
+</html>

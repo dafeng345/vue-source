@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <!-- 写模板 -->
+  <div id="root">
+    <p>{{ name.firstName }}</p>
+    <div>{{name.lastName}}</div>
+  </div>
+
+  <script>
+    // 要解决一个问题:
+    // 使用 'xxx.yyy.zzz' 可以来访问某一个对象
+    // 就是用字符串路径来访问对象的成员
+    function getValueByPath(data, path) {
+      var paths = path.split('.');
+      var res = data;
+      for (var index = 0, len = paths.length; index < len; index++) {
+        res = res[paths[index]];
+      }
+      return res;
+    }
+    function compiler(tmpNode, data) {
+      var reg = /\{\{(.+?)\}\}/g;  //惰性匹配
+      var childNodes = tmpNode.childNodes;
+      for (var i = 0, len = childNodes.length; i < len; i++) {
+        var ele = childNodes[i];
+        if (ele.nodeType == 1) {
+          compiler(ele, data);
+        } else if (ele.nodeType == 3) {
+          var txt = ele.nodeValue.replace(reg, function (param0, param1) {
+            var key = param1.trim();  //param1为path路径
+            // return data[key];
+            return getValueByPath(data,key);
+          })
+          ele.nodeValue = txt;
+        }
+      }
+    }
+
+    function JGVue(options) {
+      this._data = options.data;
+      this._el = options.el;
+      //  内部模板
+      this._templateDOM = document.querySelector(this._el);
+      this._parent = this._templateDOM.parentNode;
+      this.render();
+    }
+
+    /*将数据与模板结合，生成新dom加载到页面中*/
+    JGVue.prototype.render = function () {
+      this.compiler();
+    }
+
+    JGVue.prototype.compiler = function () {
+      var realHTMLDOM = this._templateDOM.cloneNode(true);
+      compiler(realHTMLDOM, this._data);
+      this.update(realHTMLDOM);
+    }
+
+    JGVue.prototype.update = function (realHTMLDOM) {
+      this._parent.replaceChild(realHTMLDOM, this._templateDOM);
+    }
+
+    // 想想怎么用:
+    let app = new JGVue({
+      el: '#root',
+      data: {
+        name: {
+          firstName: '张'
+          , lastName: '三峰'
+        }
+        
+      }
+    });
+
+
+
+
+  </script>
+</body>
+
+</html>

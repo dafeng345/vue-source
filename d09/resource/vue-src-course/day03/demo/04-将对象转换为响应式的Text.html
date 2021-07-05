@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    var o = {
+      name: 'jim',
+      age: 19,
+      gender: '男',
+      sex:{
+        'gender':'girl'
+      }
+    } ;
+    // 一级对象的 响应式处理
+    function defineReactive(target,key,value,enumerable){
+      Object.defineProperty(target,key,{
+        enumerable:!!enumerable
+        ,configurable:true
+        ,set:function(newVal){
+            console.log(`设置o的${key} 属性为${value}`);
+            value=newVal;
+        }
+        ,get:function(){
+          console.log(`读取o的${key}属性为${value}`);
+          return value;  //闭包
+        }
+      })
+    }
+    
+    Object.keys(o).forEach((key)=>{
+      defineReactive(o,key,o[key],true)
+    })
+   
+  </script>
+</body>
+</html>

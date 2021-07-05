@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="root">
+       <div>22</div> 
+        {{message}}
+    </div>
+    <script>
+        class Vue {
+            constructor(options) {
+                // 1.保存数据
+                this.options = options;
+                this.$el = options.el;
+                this.$data = options.data;
+                // 2.将data保存到响应式系统中
+                new Obsrever(this.$data);
+                // 3.代理this.$data的数据
+                Object.keys(this.$data).forEach(key => {
+                    this._proxy(key)
+                })
+                // 4.处理$el
+                new Compiler(this.$el, this);
+            }
+            _proxy(key) {
+                Object.defineProperty(this, key, {
+                    get() { //代理
+                        return this.$data[key];
+                    },
+                    set(newValue) {
+                        this.$data[key] = newValue;
+                    }
+                })
+            }
+        }
+        // 观察者
+        class Obsrever {
+            constructor(data) {
+                this.data = data;
+                Object.keys(data).forEach(key => {
+                    // 一个属性key对应一个发布者Dep
+                    this.defineReactive(this.data, key, this.data[key]);
+                })
+            }
+            defineReactive(data, key, value) {
+                const dep = new Dep();
+                // may have problems 
+                Object.defineProperty(data, key, {
+                    // 订阅谁在界面使用了那些属性
+                    get() {
+                        if (Dep.target) {
+                            dep.addSub(Dep.target);
+                        }
+                        return value;
+                        // return data[key];  //这里代码会不断递归报错
+                    },
+                    set(newValue) {
+                        if (value === newValue) return false;
+                        data[key] = newValue;
+                        // 通知notify所有订阅者更新自己的视图
+                        dep.notify();
+                    }
+                })
+            }
+        }
+        // 发布者
+        class Dep {
+            constructor() {
+                this.subs = [];
+            }
+            addSub(watcher) {
+                this.subs.push(watcher);
+            }
+            notify() {
+                this.subs.forEach(item => {
+                    item.update();
+                })
+            }
+        }
+        // 订阅者
+        class Watcher {
+            constructor(node, key, vm) {
+                this.node = node;
+                this.name = key;
+                this.vm = vm;
+                Dep.target = this;
+                this.update();
+                Dep.target = null;
+            }
+            update() {
+                this.node.nodeValue = this.vm[this.name];
+            }
+        }
+
+        let regExp = /\{\{(.+?)\}\}/g;
+        class Compiler {
+            // 这里的vm是Vue实例对象，不是虚拟DOM
+            constructor(el, vm) {
+                this.el = document.querySelector(el);
+                this.vm = vm;
+                this.frag = this._createFragment();
+                this.el.appendChild(this.frag);
+            }
+            _createFragment() {
+                const frag = document.createDocumentFragment();
+                var child;
+                while (child = this.el.firstChild) {
+                    this._compile(child);
+                    frag.appendChild(child);
+                }
+                return frag;
+            }
+            _compile(node) {
+                if (node.nodeType == 3) {  //文本节点
+                    if (regExp.test(node.nodeValue)) {
+                        const name = RegExp.$1.trim();
+                        new Watcher(node, name, this.vm);
+                    } 
+                }else if(node.nodeType==1) {  //元素节点
+                    
+                }
+            }
+        }
+
+
+        var app = new Vue({
+            el: '#root',
+            data: {
+                message: 'msg'
+            }
+        })
+    </script>
+</body>
+
+</html>

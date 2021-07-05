@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="root" class="outer">
+        <div class="c1">
+          <div title="t1" id="inner1">hello1</div>
+          <div title="t2">hello2</div>
+          <div title="t3">hello3</div>
+          <ul>
+            <li>1</li>
+            <li>2</li>
+            <li>3</li>
+          </ul>
+        </div>
+    </div>
+    <script>
+        // <div id="outer" class="border">I am your father</div> 
+        // =>  （转化为虚拟dom）
+        // {tag:'div',data:{id:'outer',class:'border'},children:[],value:'I am your father'}
+        class VNode{
+            /*tag:标签名，
+             *value:节点值
+             *type:节点类型
+             *data:属性组成的对象
+             *children:子元素
+            */
+            constructor(tag,value,type,data){
+                this.tag=tag&& tag.toLowerCase();
+                this.value=value;
+                this.type=type;
+                this.data=data;
+                this.children=[];
+            }
+            /*追加子元素--虚拟dom*/
+           appendChild(vnode){
+               this.children.push(vnode)
+           }
+        }
+        //真实dom转化为虚拟dom
+        function getVNode(node){
+            var _vnode;
+            if(node.nodeType==1){
+                // 1.处理属性,将node.attributes伪数组转为对象
+                var attrs={};
+                for(var i=0,len=node.attributes.length;i<len;i++){
+                    var $attr=node.attributes[i];
+                    attrs[$attr.nodeName]=$attr.nodeValue;
+                }
+                //元素节点
+                _vnode=new VNode(node.nodeName,undefined,node.nodeType,attrs);
+                // 2.处理子元素(递归：将子元素转化为虚拟dom，并添加到父元素中)
+                for(var j=0,len=node.childNodes.length;j<len;j++){
+                    _vnode.appendChild(getVNode(node.childNodes[j]))
+                }
+            }else if(node.nodeType==3){
+                // 文本节点
+                _vnode=new VNode(undefined,node.nodeValue,node.nodeType,undefined);
+            }
+            return _vnode;
+        }
+        var root=document.querySelector('#root');
+        console.log(getVNode(root));
+    </script>
+</body>
+</html>

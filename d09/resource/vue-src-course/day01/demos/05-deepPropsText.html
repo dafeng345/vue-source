@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <!-- 写模板 -->
+  <div id="root">
+    <p>{{ firstName }}</p>
+  </div>
+
+  <script>
+    function compiler(tmpNode,data){
+      var reg=/\{\{(.+?)\}\}/g;  //惰性匹配
+      var childNodes=tmpNode.childNodes;  //error-2返回所有的节点，包括文本节点、注释节点
+      for (var index = 0,len=childNodes.length; index < len; index++) {
+        var element = childNodes[index];
+        if(element.nodeType==1){  //元素节点
+          compiler(element,data);
+        }else if(element.nodeType==3){ //文本节点
+          var txt=element.nodeValue.replace(reg,function(param0,param1){
+            // param0为匹配到的内容，parame1为匹配到分组中第一组
+            var key=param1.trim();
+            return data[key];
+          })
+          // error-3 修改文件节点的值
+          element.nodeValue=txt;
+        }
+      }
+    }
+
+    // 构造函数
+    function JGVue(options){
+      // 内部私有的可读可写的数据使用_开头；内部只读的数据使用$开头。
+      this._data=options.data;
+      this._el=options.el;
+      // 内部模板
+      this._templateDOM=document.querySelector(this._el);
+      // 标记el
+      this._parent=this._templateDOM.parentNode;
+      this.render();  //渲染
+    }
+    /*将模板与data数据结合，得到DOM元素放到页面中*/
+    JGVue.prototype.render=function(){
+      this.compiler();
+    }
+    /*编译：将模板与data数据结合*/
+    JGVue.prototype.compiler=function(){
+      var realHTMLDOM=this._templateDOM.cloneNode(true);  //error-1此时，依旧没有使用递归得到新VNode
+      compiler(realHTMLDOM,this._data);
+      this.update(realHTMLDOM)
+    }
+    /*将得到DOM放到页面中*/
+    JGVue.prototype.update=function(realHTMLDOM){
+      this._parent.replaceChild(realHTMLDOM,this._templateDOM);
+    }
+    
+    let app = new JGVue( {
+      el: '#root',
+      data: {
+        // name: {
+          firstName: '张'
+          , lastName: '三峰'
+        // }
+      }
+    } );
+
+
+    
+
+  </script>
+</body>
+</html>

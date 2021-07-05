@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <div id="root">
+    <ul>
+      <li>
+        <a href="">
+          <img src="" alt="">
+        </a>
+      </li>
+      <li>
+        <span></span>
+      </li>
+      <li>
+      </li>
+    </ul>
+    <p></p>
+    <button id="btn">click</button>
+    <button></button>
+  </div>
+
+
+  <script>
+    // 深度优先算法：将每个节点存到栈结构中，思路：首先将该节点放到栈结构中（并且弹栈），再将右节点、左节点压栈
+    // 对所有子节点遍历，下次while循环中首先弹栈的是左节点
+    function deepFirstSearch(node) {
+      var nodeList = [];
+      if (node) {
+        var stack = [];
+        stack.push(node);
+        while (stack.length > 0) {
+          var item = stack.pop();
+          nodeList.push(item);
+          var children = item.children;
+          for (var i = children.length - 1; i >= 0; i--) {
+            stack.push(children[i])
+          }
+        }
+
+      }
+      return nodeList;
+    }
+    var node = document.querySelector('#root');
+    var nodeList = deepFirstSearch(node);
+    console.log(nodeList);
+  </script>
+</body>
+
+</html>

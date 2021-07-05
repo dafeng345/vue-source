@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    //  这个函数是在 Vue 编译 模板的时候就生成了
+    //  函数柯里化设计模块 path是不变的，而return的函数中参数obj是不断变化的。
+    //  vue把模板转换为抽象语法树，利用抽象语法树生产虚拟dom,再利用虚拟dom渲染到页面当中。
+    //  优点：createGetValueByPath提前生成，在任何地方都可以被调用，在使用的时候可以减少函数的调用，提高性能。
+    // 这个函数是在 Vue 编译 模板的时候就生成了
+    function createGetValueByPath(path){
+      var paths=path.split('.');
+      return function(obj){
+        // obj[paths[0]]=o[a]=res;
+        // res[paths[1]]=res[b]=res;
+        var res=obj;
+        for(var i=0,len=paths.length;i<len;i++){
+          if(paths[i]){
+            res=res[paths[i]];
+          }
+        }
+        return res;
+      }
+    }
+    var getValueByPath=createGetValueByPath('a.b.c');
+    var o = {
+      a: {
+        b: {
+          c: {
+            d: {
+              e: '正确了'
+            }
+          }
+        }
+      }
+    };
+
+    var res=getValueByPath(o);
+    console.log(res)
+  </script>
+</body>
+</html>

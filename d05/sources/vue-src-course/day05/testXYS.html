@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <script>
+        var obj = {
+            message: 'msg'
+        }
+
+        Object.keys(obj).forEach(key => {
+            var value = obj[key];  //原来的值
+            Object.defineProperty(obj, key, {
+                set(newValue) {  //新值
+                    console.log('setter value:' + value)
+                    value = newValue;
+                    console.log('setter value:' + value)
+                }
+                , get() {
+                    console.log('getter value:' + value)
+                    return value;
+                }
+            })
+        })
+
+        // 发布者
+        class Dep {
+            constructor() {
+                this.subs = [];
+            }
+            addSub(watcher) {
+                this.subs.push(watcher);
+            }
+            notify() {
+                this.subs.forEach(item => {
+                    item.update();
+                })
+            }
+        }
+        // 订阅者
+        class watcher {
+            constructor(name) {
+                this.name = name;
+            }
+            update() {
+                console.log(this.name + 'is update')
+            }
+        }
+        var dep = new Dep();
+        const w1 = new watcher('comp1');
+        const w2 = new watcher('comp2');
+        const w3 = new watcher('comp3');
+        dep.subs.push(w1, w2, w3);
+        dep.notify();
+    </script>
+</body>
+
+</html>

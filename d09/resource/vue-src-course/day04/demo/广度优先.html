@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <div id="root">
+    <ul>
+      <li>
+        <a href="">
+          <img src="" alt="">
+        </a>
+      </li>
+      <li>
+        <span></span>
+      </li>
+      <li>
+      </li>
+    </ul>
+    <p></p>
+    <button id="btn">click</button>
+    <button></button>
+  </div>
+
+  <script>
+    function breathFirstSearch(node) {
+      var nodeList = [];
+      if (node) {
+        var queue = [];
+        queue.push(node);
+        while (queue.length > 0) {
+          var item = queue.shift();  //离开队列
+          nodeList.push(item);
+          var children = item.children;
+          for (let i = 0; i < children.length; i++) {
+            queue.push(children[i]);
+          }
+        }
+      }
+      return nodeList;
+    }
+
+    var node = document.querySelector('#root');
+    var nodeList = breathFirstSearch(node);
+    console.log(nodeList);
+
+  </script>
+</body>
+
+</html>

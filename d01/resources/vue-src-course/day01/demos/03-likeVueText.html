@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+</head>
+
+<body>
+    <!-- 写模板 -->
+    <div id="root">
+        <div>
+            <p>{{ name  }}-{{  message  }}</p>
+        </div>
+        <p>{{ name }}</p>
+        <p>{{ message }}</p>
+    </div>
+    <script>
+        //1.模板
+         var tmpNode=document.querySelector('#root');
+        // 2.Vue中data
+        var data={
+            name:'xiaoming'
+            ,message:'I am your father'
+        }
+        // 3.深拷贝模板，并将新模板替换旧模板
+        var reg=/\{\{(.+?)\}\}/g; //惰性匹配
+        function compiler(tmpNode,data){
+             var childNodes=tmpNode.childNodes;
+             for(var i=0,len=childNodes.length;i<len;i++){
+                 var elem=childNodes[i];
+                 if(elem.nodeType==1){  //元素节点，使用递归
+                    compiler(elem,data);
+                 }else if(elem.nodeType==3){  //文本节点
+                    // if(reg.nodeValue){}
+                   var txt= elem.nodeValue.replace(reg,function(param0,param1){
+                        // param0为匹配到的内容，param1为匹配分组中第一组
+                        // debugger
+                        var key=param1.trim();
+                        var value=data[key];
+                        // data中的value值替代模板中{{key}}
+                        return value;
+                        // console.log(param0,param1)
+                    })
+                    elem.nodeValue=txt;
+                 }
+             }
+        }
+        
+        console.log(tmpNode);
+        // 0.error在原来的模板上替换数据，而不是拷贝生成新的模板后 替换原来的模板
+        // compiler(tmpNode,data);
+       
+        // 1.替换原来的模板,虚拟DOM
+        var generateNode=tmpNode.cloneNode(true); //深拷贝
+        compiler(generateNode,data);
+        
+        tmpNode.parentNode.replaceChild(generateNode,tmpNode);
+        console.log(generateNode);
+        // 问题一：怎么将模板DOM类型转化为String类型？
+        // 不必做这种转化
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <!-- 
+     拦截数组方法思路：不能直接在数组的原型上修改，否则，所有数组对象在调用方法时，都会有影响；
+        可以创建一个空对象obj_array，该对象的原型指向Array.prototype.寄生继承
+          对该空对象添加属性obj_array[array_method]=function{ /* 扩展的功能，实现响应化 */}
+            让将要响应式的对象原型指向这个空对象obj_array
+   -->
+  <script>
+    var array_methods = [
+      'push'
+      , 'pop'
+      , 'unshift'
+      , 'pop'
+      , 'sort'
+      , 'splice'
+      , 'reverse'
+    ]
+
+    var obj_array = Object.create(Array.prototype);
+
+    array_methods.forEach(method => {
+      // obj_array[method]=()=>{ //箭头函数中，this是父级作用域Window
+      obj_array[method] = function () {
+        // 扩展功能
+        console.log('扩展功能');
+
+        /*执行数组方法原来的功能:*/
+        /*在普通函数中，this是调用者*/
+        var res = Array.prototype[method].apply(this, arguments);
+        return res;
+      }
+    })
+
+    var arr = [];
+    arr.__proto__ = obj_array;
+    
+  </script>
+</body>
+
+</html>

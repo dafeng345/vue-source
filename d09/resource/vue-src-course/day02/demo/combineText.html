@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <!-- 写模板 -->
+    <div id="root">
+        <p>{{ name.firstName }}</p>
+        <div>{{name.lastName}}</div>
+    </div>
+    <!-- 虚拟dom与真实dom的互相转化 -->
+    <script src="vnode.js"></script>
+    <script>
+        // 要解决一个问题:
+        // 使用 'xxx.yyy.zzz' 可以来访问某一个对象
+        // 就是用字符串路径来访问对象的成员
+
+        // 在 08-deepPropsText.html的基础上改进，compiler直接将数据放到模板中（未使用虚拟dom）
+        // --->改进：使用虚拟dom
+        function getValueByPath(data, path) {
+            var paths = path.split('.');
+            var res = data;
+            for (var index = 0, len = paths.length; index < len; index++) {
+                res = res[paths[index]];
+            }
+            return res;
+        }
+
+
+        /* 创建Vue函数对象 */
+        function JGVue(options) {
+            this._data = options.data;
+            this._el = options.el;
+            //  内部模板
+            this._templateDOM = document.querySelector(this._el);
+            this._parent = this._templateDOM.parentNode;
+            //   this.render();
+            this.mounted();  //挂载
+        }
+
+        /*将数据与模板结合，生成新dom加载到页面中*/
+        // render可以是Vue实例的属性，不直接放在原型中
+        // JGVue.prototype.render = function () {
+        // 将数据放到模板中
+        //   this.compiler();
+        // }
+
+        JGVue.prototype.mounted = function () {
+            // 生成render函数(带有数据的VNode)
+            this.render = this.createRenderFn();
+            this.mountComponent();
+        }
+        JGVue.prototype.mountComponent = function () {
+            // 执行render函数,并将VNode转化为真实dom
+            var mount = () => {
+                this.update(this.render());
+            }
+            mount.call(this); //方法中this指向Vue实例
+        }
+
+        // JGVue.prototype.compiler = function () {
+        //   var realHTMLDOM = this._templateDOM.cloneNode(true);
+        //   compiler(realHTMLDOM, this._data);
+        //   this.update(realHTMLDOM);
+        // }
+
+        // 返回render函数，生成带有数据的VNode
+        JGVue.prototype.createRenderFn = function () {
+            var ast = getVNode(this._templateDOM);
+            // 将不带数据的VNode-->带有数据的VNode
+            return function render() {
+                var _vtemp = this.combine(ast, this._data);
+                return _vtemp;
+            }
+        }
+        // 将抽象语法树 ast+data-->带数据的VNode
+        JGVue.prototype.combine = function (vnode, data) {
+            // debugger
+            // 两个虚拟节点各个属性只需要一一对应
+            // 元素节点vnode.type=1需要将所有子节点加入当前节点children数组中
+            // 文本节点vnode.type=3需要对文本进行处理
+            var _vnode;
+            if (vnode.type == 1) {  //元素节点
+                _vnode = new VNode(vnode.tag, vnode.value, vnode.type, vnode.data);
+                vnode.children.forEach(_subvnode => {
+                    // 使用递归创建子节点(带数据的VNode)
+                    _vnode.appendChild(this.combine(_subvnode, data));
+                })
+            } else if (vnode.type == 3) {  //文本节点
+                var txt = vnode.value.replace(/\{\{(.+?)\}\}/g, (_, g) => {
+                    // g为第一个分组()中获得的内容
+                    var path = g.trim();
+                    return getValueByPath(data,path);
+                })
+                // 获得{{}}中变量的值,利用它生成虚拟dom
+                _vnode=new VNode(vnode.tag,txt,vnode.type,vnode.data);
+
+            }
+            return _vnode;
+        }
+
+        JGVue.prototype.update = function (vnode) {
+            var realHTMLDOM = parseVNode(vnode);
+            this._parent.replaceChild(realHTMLDOM, this._templateDOM);
+        }
+
+        // 想想怎么用:
+        let app = new JGVue({
+            el: '#root',
+            data: {
+                name: {
+                    firstName: '张'
+                    , lastName: '三峰'
+                }
+
+            }
+        });
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    let tags = 'div,p,a,img,ul,li'.split(',');
+
+    // 判断某个标签是否为内置标签
+    function makeMap(keys) {
+      var set = {};
+      keys.forEach((tag) => {
+        set[tag] = true;
+      })
+      return function (tagName) {
+        return !!set[tagName];
+      }
+    }
+    var isHTMLTag = makeMap(tags);
+    console.log(isHTMLTag('img'))
+  </script>
+</body>
+
+</html>

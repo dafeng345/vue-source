@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        var data = [
+            { "id": 2, "name": "第一级1", "pid": 0 },
+            { "id": 3, "name": "第二级1", "pid": 2 },
+            { "id": 5, "name": "第三级1", "pid": 4 },
+            { "id": 100, "name": "第三级2", "pid": 3 },
+            { "id": 6, "name": "第三级2", "pid": 3 },
+            { "id": 601, "name": "第三级2", "pid": 6 },
+            { "id": 602, "name": "第三级2", "pid": 6 },
+            { "id": 603, "name": "第三级2", "pid": 6 }
+        ];
+        console.log(arrayToJson(data));
+        function arrayToJson(treeArray) {
+            var treeMap = {}, len = treeArray.length;
+            var res=[];  //error-1最后以数组的形式返回结果
+            for (var i = 0; i < len; i++) {
+                treeMap[treeArray[i].id] = treeArray[i];
+            }
+
+            //1 寻找有子元素的ele=>当存在元素pid==该元素id时，该元素有子元素
+            for (var j = 0; j < len; j++) {
+                var item=treeMap[treeArray[j].pid];
+                if(item){  
+                    if(!item.children){
+                        item.children=[];
+                        item.children.push(treeArray[j]);
+                    }else{
+                        item.children.push(treeArray[j]);
+                    }
+                }else{
+                    //没有子元素
+                    res.push(treeArray[j])
+                }
+            }
+            return res;
+        }
+    </script>
+</body>
+
+</html>
